@@ -59,7 +59,7 @@ class _HomeState extends State<Home> {
                 margin: EdgeInsets.symmetric(
                     horizontal: Config.screenWidth! * 0.035),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //SizedBox(height: Config.screenHeight! * 0.01),
@@ -83,8 +83,8 @@ class _HomeState extends State<Home> {
                                   : Get.changeTheme(ThemeData.dark());
                             },
                             icon: Get.isDarkMode
-                                ? Icon(Icons.dark_mode)
-                                : Icon(Icons.light_mode)),
+                                ? const Icon(Icons.dark_mode)
+                                : const Icon(Icons.light_mode)),
                         IconButton(
                           icon: Icon(
                             Icons.logout_rounded,
@@ -118,6 +118,9 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Get.find<FileController>().searchData(searchQuery);
                       },
+                    ),
+                    SizedBox(
+                      height: Config.screenHeight! * 0.01,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

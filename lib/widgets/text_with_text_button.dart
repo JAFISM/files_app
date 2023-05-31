@@ -16,7 +16,7 @@ class TextWithTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: Config.screenHeight! * 0.005),
         child: Row(

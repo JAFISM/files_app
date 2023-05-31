@@ -22,7 +22,6 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Constants.Kbackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Config.screenWidth! * 0.04),

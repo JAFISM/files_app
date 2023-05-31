@@ -14,7 +14,7 @@ class HeroImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 2,
+      flex: 1,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: Config.screenHeight! * 0.02),
         child: Image.asset(

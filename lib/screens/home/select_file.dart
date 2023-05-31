@@ -29,7 +29,7 @@ class SelectWidget extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Obx(() {
               final pickedFile = _fileController.pickedFile.value;
@@ -67,10 +67,15 @@ class SelectWidget extends StatelessWidget {
                     builder: (context) => AlertDialog(
                           title: Text(
                             "New Folder",
-                            style: TextStyle(color: Constants.Kprimary),
+                            style: TextStyle(
+                                color: Get.isDarkMode
+                                    ? Constants.Kbackground
+                                    : Constants.Kprimary),
                           ),
                           icon: Icon(CupertinoIcons.folder),
-                          iconColor: Constants.Kprimary,
+                          iconColor: Get.isDarkMode
+                              ? Constants.Kbackground
+                              : Constants.Kprimary,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
                           actionsAlignment: MainAxisAlignment.spaceEvenly,
@@ -79,17 +84,25 @@ class SelectWidget extends StatelessWidget {
                               controller: folderController,
                               decoration: InputDecoration(
                                   labelText: "Folder Name",
-                                  labelStyle:
-                                      TextStyle(color: Constants.Kprimary),
+                                  labelStyle: TextStyle(
+                                      color: Get.isDarkMode
+                                          ? Constants.Kbackground
+                                          : Constants.Kprimary),
                                   enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Constants.Kprimary)),
+                                          color: Get.isDarkMode
+                                              ? Constants.Kbackground
+                                              : Constants.Kprimary)),
                                   focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Constants.Kprimary)),
+                                          color: Get.isDarkMode
+                                              ? Constants.Kbackground
+                                              : Constants.Kprimary)),
                                   border: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Constants.Kprimary))),
+                                          color: Get.isDarkMode
+                                              ? Constants.Kbackground
+                                              : Constants.Kprimary))),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
