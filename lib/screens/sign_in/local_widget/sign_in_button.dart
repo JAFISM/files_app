@@ -29,7 +29,6 @@ class SignInButtons extends StatelessWidget {
     final _authController = Get.find<AuthController>();
 
     return Expanded(
-      flex: 3,
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

@@ -25,12 +25,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       // Call the fetchDataOnUserJoin() method when the widget is built and ready
       fileController.fetchDataOnUserJoin();
       fileController.listOfAllFolders();
-      // print(fileController.uploadedFolders);
-      //fileController.readDataFromFirebase();
     });
   }
 
@@ -57,47 +55,48 @@ class _HomeState extends State<Home> {
         body: GetBuilder<AuthController>(
           builder: (_authController) {
             return SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //SizedBox(height: Config.screenHeight! * 0.01),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        child: Text(
-                          'Hello ${_authController.displayName.toString().capitalize}!',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Constants.Kprimary),
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: Config.screenWidth! * 0.035),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //SizedBox(height: Config.screenHeight! * 0.01),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          child: Text(
+                            'Hello ${_authController.displayName.toString().capitalize}!',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Constants.Kprimary),
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      IconButton(
+                        Spacer(),
+                        IconButton(
+                            onPressed: () {
+                              Get.isDarkMode
+                                  ? Get.changeTheme(ThemeData.light())
+                                  : Get.changeTheme(ThemeData.dark());
+                            },
+                            icon: Get.isDarkMode
+                                ? Icon(Icons.dark_mode)
+                                : Icon(Icons.light_mode)),
+                        IconButton(
+                          icon: Icon(
+                            Icons.logout_rounded,
+                            color: Constants.Kprimary,
+                          ),
                           onPressed: () {
-                            Get.isDarkMode
-                                ? Get.changeTheme(ThemeData.light())
-                                : Get.changeTheme(ThemeData.dark());
+                            _authController.signout();
                           },
-                          icon: Get.isDarkMode
-                              ? Icon(Icons.dark_mode)
-                              : Icon(Icons.light_mode)),
-                      IconButton(
-                        icon: Icon(
-                          Icons.logout_rounded,
-                          color: Constants.Kprimary,
                         ),
-                        onPressed: () {
-                          _authController.signout();
-                        },
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: TextField(
+                      ],
+                    ),
+                    TextField(
                       controller: searchController,
                       decoration: InputDecoration(
                         suffixIcon: const Icon(CupertinoIcons.search),
@@ -120,10 +119,7 @@ class _HomeState extends State<Home> {
                         Get.find<FileController>().searchData(searchQuery);
                       },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GetBuilder<FileController>(
@@ -154,51 +150,51 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: Config.screenHeight! * 0.01,
-                  ),
-                  Container(
-                    child: const Text(
-                      "Important Documents",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    SizedBox(
+                      height: Config.screenHeight! * 0.01,
                     ),
-                  ),
-                  SizedBox(
-                    height: Config.screenHeight! * 0.01,
-                  ),
-                  Container(
-                    child: Obx(() {
-                      final uploadedFolders = fileController.uploadedFolders;
-                      if (uploadedFolders.isEmpty) {
-                        return SizedBox();
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: uploadedFolders.length,
-                        itemBuilder: (context, index) {
-                          final folder = uploadedFolders[index];
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            child: ListTile(
-                              tileColor: Constants.Kprimary.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              leading: const Icon(
-                                CupertinoIcons.folder_fill,
-                                color: Colors.deepPurple,
+                    Container(
+                      child: const Text(
+                        "Important Documents",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: Config.screenHeight! * 0.01,
+                    ),
+                    Container(
+                      child: Obx(() {
+                        final uploadedFolders = fileController.uploadedFolders;
+                        if (uploadedFolders.isEmpty) {
+                          return SizedBox();
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: uploadedFolders.length,
+                          itemBuilder: (context, index) {
+                            final folder = uploadedFolders[index];
+                            return Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              child: ListTile(
+                                tileColor: Constants.Kprimary.withOpacity(0.1),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                leading: const Icon(
+                                  CupertinoIcons.folder_fill,
+                                  color: Colors.deepPurple,
+                                ),
+                                title: Text(folder),
+                                onTap: () {},
                               ),
-                              title: Text(folder),
-                              onTap: () {},
-                            ),
-                          );
-                        },
-                      );
-                    }),
-                  ),
-                ],
+                            );
+                          },
+                        );
+                      }),
+                    ),
+                  ],
+                ),
               ),
             );
           },
