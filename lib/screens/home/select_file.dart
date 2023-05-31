@@ -41,7 +41,8 @@ class SelectWidget extends StatelessWidget {
                       child: Text(
                     pickedFile?.name ?? 'No file selected',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   )));
             }),
             FileButton(
@@ -72,7 +73,7 @@ class SelectWidget extends StatelessWidget {
                                     ? Constants.Kbackground
                                     : Constants.Kprimary),
                           ),
-                          icon: Icon(CupertinoIcons.folder),
+                          icon: const Icon(CupertinoIcons.folder),
                           iconColor: Get.isDarkMode
                               ? Constants.Kbackground
                               : Constants.Kprimary,
@@ -112,16 +113,16 @@ class SelectWidget extends StatelessWidget {
                                       createNewFile();
                                       //_fileController.selectFile();
                                     },
-                                    icon:
-                                        Icon(CupertinoIcons.folder_badge_plus),
-                                    label: Text("Create")),
+                                    icon: const Icon(
+                                        CupertinoIcons.folder_badge_plus),
+                                    label: const Text("Create")),
                                 FileButton(
                                     onPressed: () {
                                       Get.back();
                                     },
-                                    icon:
-                                        Icon(Icons.cancel_presentation_rounded),
-                                    label: Text("Cancel")),
+                                    icon: const Icon(
+                                        Icons.cancel_presentation_rounded),
+                                    label: const Text("Cancel")),
                               ],
                             ),
                           ],
@@ -139,20 +140,18 @@ class SelectWidget extends StatelessWidget {
   void createNewFile() {
     final folderName = folderController.text;
     if (folderName.isEmpty || _fileController.pickedFile.value == null) {
-      Get.snackbar(
-        'Error',
-        'Please select a file and enter the folder name.',
-        snackPosition: SnackPosition.TOP,
-      );
+      Get.snackbar('Error', 'Please select a file and enter the folder name.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
       return;
     }
     _fileController.createNewFile(folderName).then((_) {
       _fileController.readDataFromFirebase();
-      Get.snackbar(
-        'Success',
-        'New folder created successfully.',
-        snackPosition: SnackPosition.TOP,
-      );
+      Get.snackbar('Success', 'New folder created successfully.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
       folderController.clear();
       Get.back();
     });

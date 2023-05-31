@@ -34,14 +34,17 @@ class SignInButtons extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
-            child: Text(
-              'Forgot Password?',
-              style: TextStyle(color: Constants.Kprimary),
-            ),
-            onPressed: () => Get.to(() => ResetPassword()),
+            onPressed: () => Get.to(() => const ResetPassword()),
             style: ButtonStyle(
               overlayColor: MaterialStateColor.resolveWith(
                   (states) => Colors.transparent),
+            ),
+            child: Text(
+              'Forgot Password?',
+              style: TextStyle(
+                  color: Get.isDarkMode
+                      ? Constants.Kbackground
+                      : Constants.Kprimary),
             ),
           ),
         ),
@@ -62,14 +65,14 @@ class SignInButtons extends StatelessWidget {
         ),
         SizedBox(height: Config.screenHeight! * 0.01),
         ElevatedButton.icon(
-          icon: Icon(FontAwesomeIcons.google),
+          icon: const Icon(FontAwesomeIcons.google),
           style: ButtonStyle(
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15))),
               backgroundColor: MaterialStateColor.resolveWith(
                   (states) => Constants.Kprimary)),
           onPressed: () => _authController.signInWithGoogle(),
-          label: Text("Login With Google"),
+          label: const Text("Login With Google"),
         ),
         SizedBox(
           height: Config.screenHeight! * 0.05,
@@ -84,7 +87,7 @@ class SignInButtons extends StatelessWidget {
                     style: TextStyle(color: Constants.Kprimary),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Get.to(() => SignUp());
+                        Get.to(() => const SignUp());
                       }),
               ]),
         ),

@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:files_app/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'auth_controller.dart';
@@ -50,6 +52,10 @@ class FileController extends GetxController {
 
   Future uploadFile() async {
     if (pickedFile.value == null) {
+      Get.snackbar('Failed', 'Please select file',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
       return;
     }
     final userId = getCurrentUserId();
@@ -60,16 +66,17 @@ class FileController extends GetxController {
     await uploadTask.whenComplete(() {
       // Update the uploadedFiles list after successful upload
       readDataFromFirebase();
-      Get.snackbar(
-        'File Uploaded',
-        'The file was successfully uploaded.',
-        snackPosition: SnackPosition.TOP,
-      );
+      Get.snackbar('File Uploaded', 'The file was successfully uploaded.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }).catchError((error) {
       Get.snackbar(
         'Error',
         'An error occurred while uploading the file.',
         snackPosition: SnackPosition.TOP,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
       );
     });
   }
@@ -112,42 +119,124 @@ class FileController extends GetxController {
   }
 
   Future<void> downloadFile(String fileName) async {
-    final ref = storage.ref().child('files/$fileName');
-    final downloadData = await ref.getData();
+    final userId = getCurrentUserId();
+    final filePath = 'files/$userId/$fileName';
+    final ref = storage.ref().child(filePath);
+    final appDir = await getApplicationDocumentsDirectory();
+    final localFilePath = '${appDir.path}/$fileName';
 
-    if (downloadData != null) {
-      final directory = await FilePicker.platform.getDirectoryPath();
-      final filePath = '$directory/$fileName';
-      final file = File(filePath);
-
-      await file.writeAsBytes(downloadData);
-
-      Get.snackbar(
-        'File Downloaded',
-        'The file was successfully downloaded.',
-        snackPosition: SnackPosition.TOP,
-      );
-
-      // Open the downloaded file
-      await openFile(file.path);
-    } else {
-      Get.snackbar(
-        'Error',
-        'An error occurred while downloading the file.',
-        snackPosition: SnackPosition.TOP,
-      );
+    try {
+      await ref.writeToFile(File(localFilePath));
+      Get.snackbar('File Downloaded', 'The file was successfully downloaded.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while downloading the file.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
+
+  Future<void> downloadFolder(String folderName) async {
+    final userId = getCurrentUserId();
+    final folderPath = 'files/$userId/$folderName';
+    final ref = storage.ref().child(folderPath);
+    final appSupportDir = await getApplicationSupportDirectory();
+    final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
+
+    try {
+      final ListResult listResult = await ref.listAll();
+
+      // Recreate the folder structure locally
+      Directory(localFolderPath).createSync(recursive: true);
+
+      // Download each file within the folder individually
+      for (final item in listResult.items) {
+        final itemName = item.name;
+        final localFilePath = '$localFolderPath/$itemName';
+        final file = File(localFilePath);
+
+        final downloadTask = item.writeToFile(file);
+        downloadTask.snapshotEvents.listen((taskSnapshot) {
+          // Handle different task states
+          switch (taskSnapshot.state) {
+            case TaskState.running:
+              // TODO: Handle running state
+              break;
+            case TaskState.paused:
+              // TODO: Handle paused state
+              break;
+            case TaskState.success:
+              // TODO: Handle success state
+              break;
+            case TaskState.canceled:
+              // TODO: Handle canceled state
+              break;
+            case TaskState.error:
+              // TODO: Handle error state
+              break;
+          }
+        });
+      }
+
+      Get.snackbar('Folder Downloaded',
+          'The folder was successfully downloaded. Path: $localFolderPath',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while downloading the folder.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    }
+  }
+
+  // Future<void> downloadFolder(String folderName) async {
+  //   final userId = getCurrentUserId();
+  //   final folderPath = 'files/$userId/$folderName';
+  //   final ref = storage.ref().child(folderPath);
+  //   // final appDir = await getApplicationDocumentsDirectory();
+  //   // final localFolderPath = '${appDir.path}/$folderName';
+  //   final appSupportDir = await getApplicationSupportDirectory();
+  //   final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
+  //   try {
+  //     final ListResult listResult = await ref.listAll();
+  //
+  //     // Recreate the folder structure locally
+  //     Directory(localFolderPath).createSync();
+  //
+  //     // Download each file within the folder individually
+  //     for (final item in listResult.items) {
+  //       final itemName = item.name;
+  //       final localFilePath = '$localFolderPath/$itemName';
+  //       await item.writeToFile(File(localFilePath));
+  //     }
+  //
+  //     Get.snackbar(
+  //       'Folder Downloaded',
+  //       'The folder was successfully downloaded. Path: $localFolderPath',
+  //       snackPosition: SnackPosition.TOP,
+  //     );
+  //   } catch (e) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'An error occurred while downloading the folder.',
+  //       snackPosition: SnackPosition.TOP,
+  //     );
+  //   }
+  // }
 
   Future<void> openFile(String filePath) async {
     if (await canLaunchUrl(filePath as Uri)) {
       await launchUrl(filePath as Uri);
     } else {
-      Get.snackbar(
-        'Error',
-        'Could not open the file.',
-        snackPosition: SnackPosition.TOP,
-      );
+      Get.snackbar('Error', 'Could not open the file.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
 
@@ -159,11 +248,10 @@ class FileController extends GetxController {
 
   Future<void> createNewFile(String folderName) async {
     if (folderName.isEmpty || pickedFile.value == null) {
-      Get.snackbar(
-        'Error',
-        'Please select a file and enter the folder name.',
-        snackPosition: SnackPosition.TOP,
-      );
+      Get.snackbar('Error', 'Please select a file and enter the folder name.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
       return;
     }
 
@@ -178,10 +266,10 @@ class FileController extends GetxController {
       await ref.putFile(file);
 
       Get.snackbar(
-        'File Uploaded',
-        'The file was successfully uploaded to the folder.',
-        snackPosition: SnackPosition.TOP,
-      );
+          'File Uploaded', 'The file was successfully uploaded to the folder.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
 
       // Refresh the file list
       readDataFromFirebase();
@@ -189,10 +277,10 @@ class FileController extends GetxController {
       uploadedFiles.add(folderName);
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'An error occurred while uploading the file to the folder.',
-        snackPosition: SnackPosition.TOP,
-      );
+          'Error', 'An error occurred while uploading the file to the folder.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
 

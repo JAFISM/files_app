@@ -12,6 +12,7 @@ class Constants {
   static Color Kprimary = Colors.deepPurple;
   static Color Ksecondary = Colors.purple.shade400;
   static Color Kbackground = Colors.white;
+  static Color Kblack = Colors.black;
   // static Color c3=Color(0xffBFACE2);
 }
 

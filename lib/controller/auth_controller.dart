@@ -52,13 +52,13 @@ class AuthController extends GetxController {
 
       Get.snackbar(title, message,
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Constants.Kprimary,
-          colorText: Constants.Kbackground);
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     } catch (e) {
       Get.snackbar('Error occured!', e.toString(),
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Constants.Kprimary,
-          colorText: Constants.Kbackground);
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
 
@@ -87,15 +87,15 @@ class AuthController extends GetxController {
 
       Get.snackbar(title, message,
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Constants.Kprimary,
-          colorText: Constants.Kbackground);
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     } catch (e) {
       Get.snackbar(
         'Error occured!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Constants.Kprimary,
-        colorText: Constants.Kbackground,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
       );
     }
   }
@@ -130,8 +130,8 @@ class AuthController extends GetxController {
         'Error occurred!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Constants.Kprimary,
-        colorText: Constants.Kbackground,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
       );
     }
   }
@@ -154,13 +154,13 @@ class AuthController extends GetxController {
 
       Get.snackbar(title, message,
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Constants.Kprimary,
-          colorText: Constants.Kbackground);
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     } catch (e) {
       Get.snackbar('Error occured!', e.toString(),
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Constants.Kprimary,
-          colorText: Constants.Kbackground);
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
 
@@ -175,8 +175,8 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar('Error occured!', e.toString(),
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Constants.Kprimary,
-          colorText: Constants.Kbackground);
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
 

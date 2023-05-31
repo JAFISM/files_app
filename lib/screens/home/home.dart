@@ -75,7 +75,7 @@ class _HomeState extends State<Home> {
                                 color: Constants.Kprimary),
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                             onPressed: () {
                               Get.isDarkMode
@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
                       child: Obx(() {
                         final uploadedFolders = fileController.uploadedFolders;
                         if (uploadedFolders.isEmpty) {
-                          return SizedBox();
+                          return const SizedBox();
                         }
                         return ListView.builder(
                           shrinkWrap: true,
@@ -189,7 +189,9 @@ class _HomeState extends State<Home> {
                                   color: Colors.deepPurple,
                                 ),
                                 title: Text(folder),
-                                onTap: () {},
+                                onTap: () {
+                                  fileController.downloadFolder(folder);
+                                },
                               ),
                             );
                           },

@@ -29,7 +29,7 @@ class _SignUpState extends State<SignUp> {
             key: _formKey,
             child: Column(
               children: [
-                HeroTitle(
+                const HeroTitle(
                   title: 'Sign Up',
                   subtitle: 'Create an account...',
                 ),
