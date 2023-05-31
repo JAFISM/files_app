@@ -18,10 +18,7 @@ class Root extends StatelessWidget {
       body: GetBuilder<AuthController>(
         builder: (_) {
           return SafeArea(
-            child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Config.screenWidth! * 0.04),
-                child: _.isSignedIn.value ? Home() : SignIn()),
+            child: _.isSignedIn.value ? Home() : SignIn(),
           );
         },
       ),

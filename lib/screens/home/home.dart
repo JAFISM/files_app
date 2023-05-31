@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // Call the fetchDataOnUserJoin() method when the widget is built and ready
       fileController.fetchDataOnUserJoin();
       fileController.listOfAllFolders();
@@ -34,12 +34,12 @@ class _HomeState extends State<Home> {
     });
   }
 
-  @override
-  void dispose() {
-    searchController.dispose();
-    // TODO: implement dispose
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   searchController.dispose();
+  //   // TODO: implement dispose
+  //   super.dispose();
+  // }
 
   void clearSearch() {
     setState(() {
@@ -191,10 +191,7 @@ class _HomeState extends State<Home> {
                                 color: Colors.deepPurple,
                               ),
                               title: Text(folder),
-                              onTap: () {
-                                Get.find<FileController>()
-                                    .readDataFromFirebase();
-                              },
+                              onTap: () {},
                             ),
                           );
                         },

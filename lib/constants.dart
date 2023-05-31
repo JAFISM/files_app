@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 class Constants {
   static String apiKey = "AIzaSyBLfBGQ_QJgsTheKco2y8d0q_3xxpwmchI";
+  static String authDomain = "filesapp-dea64.firebaseapp.com";
   static String appId = "1:884303056898:ios:448c3f77498dc328ed971b";
   static String messagingSenderId = "884303056898";
   static String projectId = "filesapp-dea64";
+  static String storageBucket = "filesapp-dea64.appspot.com";
+  static String measurementId = "G-BHJLHJHSXR";
 
   static Color Kprimary = Colors.deepPurple;
   static Color Ksecondary = Colors.purple.shade400;

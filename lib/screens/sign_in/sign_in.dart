@@ -38,14 +38,17 @@ class _SignInState extends State<SignIn> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: Config.screenHeight! * 0.06,
-            ),
-            // shows textfields and buttons
-            SignInForm(),
-          ],
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Config.screenWidth! * 0.04),
+          child: Column(
+            children: [
+              SizedBox(
+                height: Config.screenHeight! * 0.06,
+              ),
+              // shows textfields and buttons
+              SignInForm(),
+            ],
+          ),
         ),
       ),
     );

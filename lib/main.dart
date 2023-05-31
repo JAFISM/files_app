@@ -16,7 +16,10 @@ void main() async {
             apiKey: Constants.apiKey,
             appId: Constants.appId,
             messagingSenderId: Constants.messagingSenderId,
-            projectId: Constants.projectId));
+            projectId: Constants.projectId,
+            authDomain: Constants.authDomain,
+            storageBucket: Constants.storageBucket,
+            measurementId: Constants.measurementId));
   } else {
     // run the initialization for the android , ios
     await Firebase.initializeApp();
