@@ -13,6 +13,7 @@ class Constants {
   static Color Ksecondary = Colors.purple.shade400;
   static Color Kbackground = Colors.white;
   static Color Kblack = Colors.black;
+  static Color Dblack = const Color(0xff303030);
   // static Color c3=Color(0xffBFACE2);
 }
 

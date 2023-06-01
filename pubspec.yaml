@@ -46,7 +46,7 @@ dependencies:
   url_launcher:
   flutter_downloader: ^1.10.4
   path_provider:
-
+  gallery_saver:
 
 dev_dependencies:
   flutter_test:

@@ -16,6 +16,8 @@ class SelectWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor:
+          Get.isDarkMode ? Constants.Dblack : Constants.Kbackground,
       appBar: AppBar(
         backgroundColor: Constants.Kprimary,
         title: Text("File Preview"),
@@ -115,7 +117,7 @@ class SelectWidget extends StatelessWidget {
                                     },
                                     icon: const Icon(
                                         CupertinoIcons.folder_badge_plus),
-                                    label: const Text("Create")),
+                                    label: const Text("Upload")),
                                 FileButton(
                                     onPressed: () {
                                       Get.back();
@@ -129,7 +131,7 @@ class SelectWidget extends StatelessWidget {
                         ));
               },
               icon: const Icon(Icons.create_new_folder),
-              label: const Text("New Folder"),
+              label: const Text("Create New Folder"),
             ),
           ],
         ),

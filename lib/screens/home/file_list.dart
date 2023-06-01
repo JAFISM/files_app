@@ -28,7 +28,8 @@ class _ListFileState extends State<ListFile> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      //backgroundColor: Constants.Kbackground,
+      backgroundColor:
+          Get.isDarkMode ? Constants.Dblack : Constants.Kbackground,
       appBar: AppBar(
         title: const Text("File Manager"),
         backgroundColor: Constants.Kprimary,
@@ -59,12 +60,12 @@ class _ListFileState extends State<ListFile> {
             ),
           ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  // color: Constants.Kbackground,
-                  child: const Padding(
+            child: Container(
+              color: Get.isDarkMode ? Constants.Dblack : Constants.Kbackground,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       children: [
@@ -85,136 +86,153 @@ class _ListFileState extends State<ListFile> {
                       ],
                     ),
                   ),
-                ),
-                SizedBox(height: Config.screenHeight! * 0.01),
-                Expanded(
-                  child: Obx(() {
-                    final uploadedFolders = _fileController.uploadedFolders;
-                    return Container(
-                      //color: Colors.red,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      child: ListView.separated(
-                        itemCount: uploadedFolders.length,
-                        separatorBuilder: (context, index) => SizedBox(
-                          height: Config.screenHeight! * 0.01,
-                        ),
-                        itemBuilder: (context, index) {
-                          final folder = uploadedFolders[index];
-                          return ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            tileColor: Constants.Kprimary.withOpacity(0.1),
-                            title: Text(folder),
-                            leading: const Icon(
-                              CupertinoIcons.folder,
-                              color: Colors.deepPurple,
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: Config.screenHeight! * 0.05,
-                  //color: Constants.Kbackground,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Files",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Icon(
-                          Icons.file_copy,
-                          color: Colors.deepPurple,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: Config.screenHeight! * 0.01,
-                ),
-                Expanded(
-                  child: Container(
-                    //color: Colors.green,
-                    margin: const EdgeInsets.only(left: 10, right: 10),
+                  SizedBox(height: Config.screenHeight! * 0.01),
+                  Expanded(
                     child: Obx(() {
-                      final uploadedFiles = _fileController.uploadedFiles;
-                      if (uploadedFiles.isEmpty) {
-                        // Display circular progress indicator while fetching data
-                        return const Center(child: Text("No file Found!"));
-                      }
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: uploadedFiles.length,
-                        separatorBuilder: (_, index) =>
-                            SizedBox(height: Config.screenHeight! * 0.01),
-                        itemBuilder: (context, index) {
-                          final fileName = uploadedFiles[index];
-                          final fileExtension =
-                              fileName.split('.').last.toLowerCase();
-                          IconData iconData;
-                          switch (fileExtension) {
-                            case 'pdf':
-                              iconData = Icons.picture_as_pdf;
-                              break;
-                            case 'doc':
-                            case 'docx':
-                              iconData = Icons.description;
-                              break;
-                            case 'jpg':
-                            case 'jpeg':
-                            case 'png':
-                              iconData = Icons.image;
-                              break;
-                            case 'mp4':
-                            case 'mov':
-                            case 'avi':
-                              iconData = Icons.movie;
-                              break;
-                            default:
-                              iconData = Icons.insert_drive_file;
-                          }
-                          return ListTile(
-                            leading: Icon(
-                              iconData,
-                              color: Constants.Kprimary,
-                            ),
-                            trailing: IconButton(
-                              color: Constants.Kprimary,
-                              icon: const Icon(FontAwesomeIcons.download),
-                              onPressed: () {
-                                _fileController.downloadFile(fileName);
-                              },
-                            ),
-                            tileColor: Constants.Kprimary.withOpacity(0.1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            title: Text(fileName),
-                          );
-                        },
+                      final uploadedFolders = _fileController.uploadedFolders;
+                      return Container(
+                        //color: Colors.red,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        child: ListView.separated(
+                          itemCount: uploadedFolders.length,
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: Config.screenHeight! * 0.01,
+                          ),
+                          itemBuilder: (context, index) {
+                            final folder = uploadedFolders[index];
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Constants.Kprimary.withOpacity(0.1)),
+                              child: ListTile(
+                                title: Text(folder),
+                                leading: const Icon(
+                                  CupertinoIcons.folder,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       );
                     }),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Get.isDarkMode ? Constants.Dblack : Constants.Kbackground,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: Config.screenHeight! * 0.05,
+                    //color: Constants.Kbackground,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Files",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Icon(
+                            Icons.file_copy,
+                            color: Colors.deepPurple,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: Config.screenHeight! * 0.01,
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 10, right: 10),
+                      child: Obx(() {
+                        final uploadedFiles = _fileController.uploadedFiles;
+                        if (uploadedFiles.isEmpty) {
+                          // Display circular progress indicator while fetching data
+                          return const Center(child: Text("No file Found!"));
+                        }
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: uploadedFiles.length,
+                          separatorBuilder: (_, index) =>
+                              SizedBox(height: Config.screenHeight! * 0.01),
+                          itemBuilder: (context, index) {
+                            final fileName = uploadedFiles[index];
+                            final fileExtension =
+                                fileName.split('.').last.toLowerCase();
+                            IconData iconData;
+                            switch (fileExtension) {
+                              case 'pdf':
+                                iconData = Icons.picture_as_pdf;
+                                break;
+                              case 'doc':
+                              case 'docx':
+                                iconData = Icons.description;
+                                break;
+                              case 'jpg':
+                              case 'jpeg':
+                              case 'png':
+                                iconData = Icons.image;
+                                break;
+                              case 'mp4':
+                              case 'mov':
+                              case 'avi':
+                                iconData = Icons.movie;
+                                break;
+                              default:
+                                iconData = Icons.insert_drive_file;
+                            }
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Constants.Kprimary.withOpacity(0.1),
+                              ),
+                              child: ListTile(
+                                leading: Icon(
+                                  iconData,
+                                  color: Constants.Kprimary,
+                                ),
+                                trailing: Wrap(
+                                  children: [
+                                    IconButton(
+                                      color: Constants.Kprimary,
+                                      icon:
+                                          const Icon(FontAwesomeIcons.download),
+                                      onPressed: () {
+                                        _fileController.downloadFile(fileName);
+                                      },
+                                    ),
+                                    IconButton(
+                                      color: Constants.Kprimary,
+                                      icon: const Icon(CupertinoIcons.delete),
+                                      onPressed: () {
+                                        _fileController.deleteFile(fileName);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                title: Text(fileName),
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

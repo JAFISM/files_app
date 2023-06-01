@@ -36,9 +36,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: ControllerBindings(),
-      theme: ThemeData(
-        primaryColor: Colors.deepPurple,
-      ),
+      theme: ThemeData(),
+      themeMode: Get.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      //theme: ThemeData(primaryColor: Colors.deepPurple),
       home: const Root(),
     );
   }

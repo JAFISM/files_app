@@ -130,6 +130,7 @@ class FileController extends GetxController {
       Get.snackbar('File Downloaded', 'The file was successfully downloaded.',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Constants.Kbackground,
+          // duration: Duration(seconds: 15),
           colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     } catch (e) {
       Get.snackbar('Error', 'An error occurred while downloading the file.',
@@ -193,41 +194,6 @@ class FileController extends GetxController {
           colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
   }
-
-  // Future<void> downloadFolder(String folderName) async {
-  //   final userId = getCurrentUserId();
-  //   final folderPath = 'files/$userId/$folderName';
-  //   final ref = storage.ref().child(folderPath);
-  //   // final appDir = await getApplicationDocumentsDirectory();
-  //   // final localFolderPath = '${appDir.path}/$folderName';
-  //   final appSupportDir = await getApplicationSupportDirectory();
-  //   final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
-  //   try {
-  //     final ListResult listResult = await ref.listAll();
-  //
-  //     // Recreate the folder structure locally
-  //     Directory(localFolderPath).createSync();
-  //
-  //     // Download each file within the folder individually
-  //     for (final item in listResult.items) {
-  //       final itemName = item.name;
-  //       final localFilePath = '$localFolderPath/$itemName';
-  //       await item.writeToFile(File(localFilePath));
-  //     }
-  //
-  //     Get.snackbar(
-  //       'Folder Downloaded',
-  //       'The folder was successfully downloaded. Path: $localFolderPath',
-  //       snackPosition: SnackPosition.TOP,
-  //     );
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       'Error',
-  //       'An error occurred while downloading the folder.',
-  //       snackPosition: SnackPosition.TOP,
-  //     );
-  //   }
-  // }
 
   Future<void> openFile(String filePath) async {
     if (await canLaunchUrl(filePath as Uri)) {
@@ -295,5 +261,55 @@ class FileController extends GetxController {
 
     uploadedFiles.assignAll(filteredFiles);
     uploadedFolders.assignAll(filteredFolders);
+  }
+
+  Future<void> deleteFile(String fileName) async {
+    final userId = getCurrentUserId();
+    final filePath = 'files/$userId/$fileName';
+    final ref = storage.ref().child(filePath);
+
+    try {
+      await ref.delete();
+
+      // Update the uploadedFiles list after successful deletion
+      readDataFromFirebase();
+      Get.snackbar('File Deleted', 'The file was successfully deleted.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while deleting the file.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    }
+  }
+
+  Future<void> deleteFolder(String folderName) async {
+    final userId = getCurrentUserId();
+    final folderPath = 'files/$userId/$folderName';
+    final ref = storage.ref().child(folderPath);
+
+    try {
+      // Get a list of all items (files and subfolders) within the folder
+      final ListResult listResult = await ref.listAll();
+
+      // Delete each item within the folder recursively
+      for (final item in listResult.items) {
+        await item.delete();
+      }
+
+      // Update the uploadedFolders list after successful deletion
+      listOfAllFolders();
+      Get.snackbar('Folder Deleted', 'The folder was successfully deleted.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while deleting the folder.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Constants.Kbackground,
+          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+    }
   }
 }

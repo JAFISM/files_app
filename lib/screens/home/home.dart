@@ -52,121 +52,139 @@ class _HomeState extends State<Home> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        // backgroundColor:
+        //     Get.isDarkMode ? Constants.Kblack : Constants.Kbackground,
         body: GetBuilder<AuthController>(
           builder: (_authController) {
-            return SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: Config.screenWidth! * 0.035),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //SizedBox(height: Config.screenHeight! * 0.01),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          child: Text(
-                            'Hello ${_authController.displayName.toString().capitalize}!',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Constants.Kprimary),
+            return Container(
+              child: Column(
+                children: [
+                  Container(
+                    // color: Get.isDarkMode
+                    //     ? Constants.Kblack
+                    //     : Constants.Kbackground,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Config.screenWidth! * 0.035),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //SizedBox(height: Config.screenHeight! * 0.01),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Text(
+                                  'Hello ${_authController.displayName.toString().capitalize}!',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: Constants.Kprimary),
+                                ),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                  onPressed: () {
+                                    Get.isDarkMode
+                                        ? Get.changeTheme(ThemeData.light())
+                                        : Get.changeTheme(ThemeData.dark());
+                                  },
+                                  icon: Get.isDarkMode
+                                      ? const Icon(Icons.dark_mode)
+                                      : const Icon(Icons.light_mode)),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.logout_rounded,
+                                  color: Constants.Kprimary,
+                                ),
+                                onPressed: () {
+                                  _authController.signout();
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                            onPressed: () {
-                              Get.isDarkMode
-                                  ? Get.changeTheme(ThemeData.light())
-                                  : Get.changeTheme(ThemeData.dark());
+                          TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              suffixIcon: const Icon(CupertinoIcons.search),
+                              hintText: "Search here...",
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Constants.Kprimary),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Constants.Kprimary),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                            ),
+                            onChanged: (value) {
+                              searchQuery = value;
                             },
-                            icon: Get.isDarkMode
-                                ? const Icon(Icons.dark_mode)
-                                : const Icon(Icons.light_mode)),
-                        IconButton(
-                          icon: Icon(
-                            Icons.logout_rounded,
-                            color: Constants.Kprimary,
+                            onTap: () {
+                              Get.find<FileController>()
+                                  .searchData(searchQuery);
+                            },
                           ),
-                          onPressed: () {
-                            _authController.signout();
-                          },
-                        ),
-                      ],
-                    ),
-                    TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        suffixIcon: const Icon(CupertinoIcons.search),
-                        hintText: "Search here...",
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Constants.Kprimary),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Constants.Kprimary),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20)),
+                          SizedBox(
+                            height: Config.screenHeight! * 0.01,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GetBuilder<FileController>(
+                                builder: (controller) => FileButton(
+                                  onPressed: () {
+                                    Get.to(SelectWidget());
+                                  },
+                                  icon: Icon(Icons.select_all_outlined),
+                                  label: Text("Select File"),
+                                ),
+                              ),
+                              GetBuilder<FileController>(
+                                builder: (controller) => FileButton(
+                                  onPressed: () {
+                                    fileController.listOfAllFolders();
+                                    if (controller.uploadedFiles.isEmpty) {
+                                      Get.snackbar(
+                                          "Refresh", "Add Files in your app");
+                                    } else {
+                                      const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(Icons.refresh),
+                                  label: const Text("Refresh"),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: Config.screenHeight! * 0.01,
+                          ),
+                          Container(
+                            child: const Text(
+                              "Important Documents",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            height: Config.screenHeight! * 0.01,
+                          ),
+                        ],
                       ),
-                      onChanged: (value) {
-                        searchQuery = value;
-                      },
-                      onTap: () {
-                        Get.find<FileController>().searchData(searchQuery);
-                      },
                     ),
-                    SizedBox(
-                      height: Config.screenHeight! * 0.01,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GetBuilder<FileController>(
-                          builder: (controller) => FileButton(
-                            onPressed: () {
-                              Get.to(SelectWidget());
-                            },
-                            icon: Icon(Icons.select_all_outlined),
-                            label: Text("Select File"),
-                          ),
-                        ),
-                        GetBuilder<FileController>(
-                          builder: (controller) => FileButton(
-                            onPressed: () {
-                              fileController.listOfAllFolders();
-                              if (controller.uploadedFiles.isEmpty) {
-                                Get.snackbar(
-                                    "Refresh", "Add Files in your app");
-                              } else {
-                                const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.refresh),
-                            label: const Text("Refresh"),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: Config.screenHeight! * 0.01,
-                    ),
-                    Container(
-                      child: const Text(
-                        "Important Documents",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(
-                      height: Config.screenHeight! * 0.01,
-                    ),
-                    Container(
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: Config.screenWidth! * 0.035),
                       child: Obx(() {
                         final uploadedFolders = fileController.uploadedFolders;
                         if (uploadedFolders.isEmpty) {
@@ -188,6 +206,30 @@ class _HomeState extends State<Home> {
                                   CupertinoIcons.folder_fill,
                                   color: Colors.deepPurple,
                                 ),
+                                trailing: GestureDetector(
+                                  onTap: () {
+                                    Get.dialog(AlertDialog(
+                                      title: const Text("Delete Folder"),
+                                      content: const Text(
+                                          "Are you sure you want to delete this folder?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              fileController
+                                                  .deleteFolder(folder);
+                                              Get.back();
+                                            },
+                                            child: Text("Delete")),
+                                        TextButton(
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text("Cancel"))
+                                      ],
+                                    ));
+                                  },
+                                  child: Icon(CupertinoIcons.delete),
+                                ),
                                 title: Text(folder),
                                 onTap: () {
                                   fileController.downloadFolder(folder);
@@ -198,8 +240,8 @@ class _HomeState extends State<Home> {
                         );
                       }),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
