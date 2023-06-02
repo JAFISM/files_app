@@ -129,7 +129,7 @@ class _ListFileState extends State<ListFile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: Config.screenHeight! * 0.05,
+                    height: Config.screenHeight! * 0.035,
                     //color: Constants.Kbackground,
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -156,7 +156,9 @@ class _ListFileState extends State<ListFile> {
                   ),
                   Expanded(
                     child: Container(
-                      margin: const EdgeInsets.only(left: 10, right: 10),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: Config.screenWidth! * 0.03,
+                          vertical: Config.screenHeight! * 0.01),
                       child: Obx(() {
                         final uploadedFiles = _fileController.uploadedFiles;
                         if (uploadedFiles.isEmpty) {

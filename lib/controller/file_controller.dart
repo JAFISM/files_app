@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:files_app/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'auth_controller.dart';
 
@@ -122,12 +123,20 @@ class FileController extends GetxController {
     final userId = getCurrentUserId();
     final filePath = 'files/$userId/$fileName';
     final ref = storage.ref().child(filePath);
-    final appDir = await getApplicationDocumentsDirectory();
-    final localFilePath = '${appDir.path}/$fileName';
+    final url = await ref.getDownloadURL();
+    final tempDir = await getTemporaryDirectory();
+    final path = '${tempDir.path}/$fileName';
+    await Dio().download(url, path);
 
     try {
-      await ref.writeToFile(File(localFilePath));
-      Get.snackbar('File Downloaded', 'The file was successfully downloaded.',
+      if (url.contains(".mp4")) {
+        await GallerySaver.saveVideo(path, toDcim: true);
+      } else if (url.contains(".jpg") || url.contains(".png")) {
+        await GallerySaver.saveImage(path, toDcim: true);
+      }
+      //await ref.writeToFile(File(localFilePath));
+      Get.snackbar(
+          'File Downloaded', 'The file was successfully downloaded to Gallery.',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Constants.Kbackground,
           // duration: Duration(seconds: 15),
@@ -144,7 +153,7 @@ class FileController extends GetxController {
     final userId = getCurrentUserId();
     final folderPath = 'files/$userId/$folderName';
     final ref = storage.ref().child(folderPath);
-    final appSupportDir = await getApplicationSupportDirectory();
+    final appSupportDir = await getTemporaryDirectory();
     final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
 
     try {
@@ -160,26 +169,7 @@ class FileController extends GetxController {
         final file = File(localFilePath);
 
         final downloadTask = item.writeToFile(file);
-        downloadTask.snapshotEvents.listen((taskSnapshot) {
-          // Handle different task states
-          switch (taskSnapshot.state) {
-            case TaskState.running:
-              // TODO: Handle running state
-              break;
-            case TaskState.paused:
-              // TODO: Handle paused state
-              break;
-            case TaskState.success:
-              // TODO: Handle success state
-              break;
-            case TaskState.canceled:
-              // TODO: Handle canceled state
-              break;
-            case TaskState.error:
-              // TODO: Handle error state
-              break;
-          }
-        });
+        await downloadTask;
       }
 
       Get.snackbar('Folder Downloaded',
@@ -195,17 +185,45 @@ class FileController extends GetxController {
     }
   }
 
-  Future<void> openFile(String filePath) async {
-    if (await canLaunchUrl(filePath as Uri)) {
-      await launchUrl(filePath as Uri);
-    } else {
-      Get.snackbar('Error', 'Could not open the file.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Constants.Kbackground,
-          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
-    }
-  }
-
+  // Future<void> downloadFolder(String folderName) async {
+  //   final userId = getCurrentUserId();
+  //   final folderPath = 'files/$userId/$folderName';
+  //   final ref = storage.ref().child(folderPath);
+  //   final appSupportDir = await getTemporaryDirectory();
+  //   final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
+  //
+  //   try {
+  //     final ListResult listResult = await ref.listAll();
+  //
+  //     // Recreate the folder structure locally
+  //     Directory(localFolderPath).createSync(recursive: true);
+  //
+  //     // Download each file within the folder individually
+  //     for (final item in listResult.items) {
+  //       final itemName = item.name;
+  //       final localFilePath = '$localFolderPath/$itemName';
+  //       final file = File(localFilePath);
+  //
+  //       final downloadTask = item.writeToFile(file);
+  //       await downloadTask;
+  //     }
+  //
+  //     // Open the downloaded folder using the open_file package
+  //     OpenFile.open(localFolderPath);
+  //
+  //     Get.snackbar('Folder Downloaded',
+  //         'The folder was successfully downloaded. Path: $localFolderPath',
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Constants.Kbackground,
+  //         colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+  //   } catch (e) {
+  //     Get.snackbar('Error', 'An error occurred while downloading the folder.',
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Constants.Kbackground,
+  //         colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+  //   }
+  // }
+  //
   String getCurrentUserId() {
     return Get.find<AuthController>().getCurrentUserId();
   }

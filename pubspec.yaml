@@ -47,6 +47,7 @@ dependencies:
   flutter_downloader: ^1.10.4
   path_provider:
   gallery_saver:
+  open_file:
 
 dev_dependencies:
   flutter_test:
