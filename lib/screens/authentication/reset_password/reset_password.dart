@@ -24,14 +24,14 @@ class ResetPassword extends StatelessWidget {
                 onPressed: () => Get.back(),
               ),
             ),
-            HeroTitle(
+            const HeroTitle(
                 title: 'Recovery', subtitle: 'Please enter you account email'),
             SizedBox(height: Config.screenHeight! * 0.05),
-            HeroImage(
+            const HeroImage(
                 path: 'assets/files_store_image.png',
                 sementicLabel: 'Reset Hero'),
             SizedBox(height: Config.screenHeight! * 0.05),
-            ResetForm(),
+            const ResetForm(),
             SizedBox(height: Config.screenHeight! * 0.2),
           ],
         ),

@@ -20,13 +20,13 @@ class SelectWidget extends StatelessWidget {
           Get.isDarkMode ? Constants.Dblack : Constants.Kbackground,
       appBar: AppBar(
         backgroundColor: Constants.Kprimary,
-        title: Text("File Preview"),
+        title: const Text("File Preview"),
         actions: [
           IconButton(
               onPressed: () {
-                Get.to(ListFile());
+                Get.to(const ListFile());
               },
-              icon: Icon(CupertinoIcons.forward))
+              icon: const Icon(CupertinoIcons.forward))
         ],
       ),
       body: Center(

@@ -26,15 +26,11 @@ class TextWithTextButton extends StatelessWidget {
               text!,
             ),
             TextButton(
+              onPressed: onPressed,
               child: Text(
                 textButtonText!,
                 style: TextStyle(color: Constants.Kprimary),
               ),
-              onPressed: onPressed,
-              style: ButtonStyle(
-                  // overlayColor: MaterialStateColor.resolveWith(
-                  //     (states) => Colors.transparent),
-                  ),
             ),
           ],
         ),

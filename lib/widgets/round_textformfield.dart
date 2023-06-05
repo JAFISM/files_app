@@ -22,27 +22,27 @@ class RoundedTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText!,
         focusedBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.deepPurple),
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(30.0),
+          borderSide: BorderSide(color: Colors.deepPurple),
+          borderRadius: BorderRadius.all(
+            Radius.circular(30.0),
           ),
         ),
         enabledBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.deepPurple),
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(30.0),
+          borderSide: BorderSide(color: Colors.deepPurple),
+          borderRadius: BorderRadius.all(
+            Radius.circular(30.0),
           ),
         ),
         errorBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(30.0),
+          borderSide: BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.all(
+            Radius.circular(30.0),
           ),
         ),
         focusedErrorBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
-          borderRadius: const BorderRadius.all(
-            const Radius.circular(30.0),
+          borderSide: BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.all(
+            Radius.circular(30.0),
           ),
         ),
       ),

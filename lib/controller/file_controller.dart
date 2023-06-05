@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:files_app/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'auth_controller.dart';
 
@@ -120,110 +120,70 @@ class FileController extends GetxController {
   }
 
   Future<void> downloadFile(String fileName) async {
-    final userId = getCurrentUserId();
+    final userId =
+        getCurrentUserId(); // Replace with your method to get the current user ID
     final filePath = 'files/$userId/$fileName';
     final ref = storage.ref().child(filePath);
     final url = await ref.getDownloadURL();
-    final tempDir = await getTemporaryDirectory();
-    final path = '${tempDir.path}/$fileName';
-    await Dio().download(url, path);
 
     try {
-      if (url.contains(".mp4")) {
-        await GallerySaver.saveVideo(path, toDcim: true);
-      } else if (url.contains(".jpg") || url.contains(".png")) {
-        await GallerySaver.saveImage(path, toDcim: true);
-      }
-      //await ref.writeToFile(File(localFilePath));
+      final directory = await getExternalDocumentPath();
+      final savePath = '$directory/$fileName';
+      await Dio().download(url, savePath);
+
       Get.snackbar(
-          'File Downloaded', 'The file was successfully downloaded to Gallery.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Constants.Kbackground,
-          // duration: Duration(seconds: 15),
-          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+        'File Downloaded',
+        'The file was successfully downloaded to the Downloads folder.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
+      );
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred while downloading the file.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Constants.Kbackground,
-          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+      Get.snackbar(
+        'Error',
+        'An error occurred while downloading the file.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
+      );
     }
   }
 
-  Future<void> downloadFolder(String folderName) async {
+  Future<void> downloadFilesInFolder(String folderName) async {
     final userId = getCurrentUserId();
     final folderPath = 'files/$userId/$folderName';
     final ref = storage.ref().child(folderPath);
-    final appSupportDir = await getTemporaryDirectory();
-    final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
 
     try {
       final ListResult listResult = await ref.listAll();
 
-      // Recreate the folder structure locally
-      Directory(localFolderPath).createSync(recursive: true);
-
-      // Download each file within the folder individually
       for (final item in listResult.items) {
-        final itemName = item.name;
-        final localFilePath = '$localFolderPath/$itemName';
-        final file = File(localFilePath);
+        final fileName = item.name;
+        final url = await item.getDownloadURL();
+        final directory = await getExternalDocumentPath();
+        final savePath = '$directory/$fileName';
 
-        final downloadTask = item.writeToFile(file);
-        await downloadTask;
+        await Dio().download(url, savePath);
       }
 
-      Get.snackbar('Folder Downloaded',
-          'The folder was successfully downloaded. Path: $localFolderPath',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Constants.Kbackground,
-          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+      Get.snackbar(
+        'Files Downloaded',
+        'The files were successfully downloaded.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
+      );
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred while downloading the folder.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Constants.Kbackground,
-          colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
+      Get.snackbar(
+        'Error',
+        'An error occurred while downloading the files.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Constants.Kbackground,
+        colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack,
+      );
     }
   }
 
-  // Future<void> downloadFolder(String folderName) async {
-  //   final userId = getCurrentUserId();
-  //   final folderPath = 'files/$userId/$folderName';
-  //   final ref = storage.ref().child(folderPath);
-  //   final appSupportDir = await getTemporaryDirectory();
-  //   final localFolderPath = '${appSupportDir.path}/Downloads/$folderName';
-  //
-  //   try {
-  //     final ListResult listResult = await ref.listAll();
-  //
-  //     // Recreate the folder structure locally
-  //     Directory(localFolderPath).createSync(recursive: true);
-  //
-  //     // Download each file within the folder individually
-  //     for (final item in listResult.items) {
-  //       final itemName = item.name;
-  //       final localFilePath = '$localFolderPath/$itemName';
-  //       final file = File(localFilePath);
-  //
-  //       final downloadTask = item.writeToFile(file);
-  //       await downloadTask;
-  //     }
-  //
-  //     // Open the downloaded folder using the open_file package
-  //     OpenFile.open(localFolderPath);
-  //
-  //     Get.snackbar('Folder Downloaded',
-  //         'The folder was successfully downloaded. Path: $localFolderPath',
-  //         snackPosition: SnackPosition.TOP,
-  //         backgroundColor: Constants.Kbackground,
-  //         colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
-  //   } catch (e) {
-  //     Get.snackbar('Error', 'An error occurred while downloading the folder.',
-  //         snackPosition: SnackPosition.TOP,
-  //         backgroundColor: Constants.Kbackground,
-  //         colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
-  //   }
-  // }
-  //
   String getCurrentUserId() {
     return Get.find<AuthController>().getCurrentUserId();
   }
@@ -329,5 +289,46 @@ class FileController extends GetxController {
           backgroundColor: Constants.Kbackground,
           colorText: Get.isDarkMode ? Constants.Kprimary : Constants.Kblack);
     }
+  }
+
+  Future<String> getExternalDocumentPath() async {
+    // To check whether permission is given for this app or not.
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      // If not we will ask for permission first
+      await Permission.storage.request();
+    }
+
+    Directory _directory = Directory("");
+    if (Platform.isAndroid) {
+      // Redirects it to download folder in android
+      _directory = Directory("/storage/emulated/0/Download");
+    } else {
+      _directory = await getApplicationDocumentsDirectory();
+    }
+
+    final exPath = _directory.path;
+    print("Saved Path: $exPath");
+    await Directory(exPath).create(recursive: true);
+    return exPath;
+  }
+
+  Future<String> get _localPath async {
+    // final directory = await getApplicationDocumentsDirectory();
+    // return directory.path;
+    // To get the external path from device of download folder
+    final String directory = await getExternalDocumentPath();
+    return directory;
+  }
+
+  Future<File> writeCounter(String bytes, String name) async {
+    final path = await _localPath;
+    // Create a file for the path of
+    // device and file name with extension
+    File file = File('$path/$name');
+    print("Save file");
+
+    // Write the data in the file you have created
+    return file.writeAsString(bytes);
   }
 }

@@ -20,6 +20,7 @@ class _HomeState extends State<Home> {
       Get.put(FileController(), permanent: true);
 
   String searchQuery = '';
+  bool _searchFieldEnabled = false;
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -32,20 +33,20 @@ class _HomeState extends State<Home> {
     });
   }
 
-  // @override
-  // void dispose() {
-  //   searchController.dispose();
-  //   // TODO: implement dispose
-  //   super.dispose();
-  // }
-
-  void clearSearch() {
-    setState(() {
-      searchQuery = '';
-      searchController.clear();
-    });
-    Get.find<FileController>().listOfAllFolders();
+  @override
+  void dispose() {
+    searchController.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
+
+  // void clearSearch() {
+  //   setState(() {
+  //     searchQuery = '';
+  //     searchController.clear();
+  //   });
+  //   Get.find<FileController>().listOfAllFolders();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -104,31 +105,37 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ),
-                          TextField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              suffixIcon: const Icon(CupertinoIcons.search),
-                              hintText: "Search here...",
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Constants.Kprimary),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Constants.Kprimary),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                            ),
-                            onChanged: (value) {
-                              searchQuery = value;
-                            },
+                          GestureDetector(
                             onTap: () {
-                              Get.find<FileController>()
-                                  .searchData(searchQuery);
+                              _searchFieldEnabled = true;
                             },
+                            child: TextField(
+                              enabled: !_searchFieldEnabled,
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                suffixIcon: const Icon(CupertinoIcons.search),
+                                hintText: "Search here...",
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Constants.Kprimary),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Constants.Kprimary),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                              ),
+                              onChanged: (value) {
+                                searchQuery = value;
+                              },
+                              onTap: () {
+                                Get.find<FileController>()
+                                    .searchData(searchQuery);
+                              },
+                            ),
                           ),
                           SizedBox(
                             height: Config.screenHeight! * 0.01,
@@ -141,8 +148,8 @@ class _HomeState extends State<Home> {
                                   onPressed: () {
                                     Get.to(SelectWidget());
                                   },
-                                  icon: Icon(Icons.select_all_outlined),
-                                  label: Text("Select File"),
+                                  icon: const Icon(Icons.select_all_outlined),
+                                  label: const Text("Select File"),
                                 ),
                               ),
                               GetBuilder<FileController>(
@@ -219,20 +226,20 @@ class _HomeState extends State<Home> {
                                                   .deleteFolder(folder);
                                               Get.back();
                                             },
-                                            child: Text("Delete")),
+                                            child: const Text("Delete")),
                                         TextButton(
                                             onPressed: () {
                                               Get.back();
                                             },
-                                            child: Text("Cancel"))
+                                            child: const Text("Cancel"))
                                       ],
                                     ));
                                   },
-                                  child: Icon(CupertinoIcons.delete),
+                                  child: const Icon(CupertinoIcons.delete),
                                 ),
                                 title: Text(folder),
                                 onTap: () {
-                                  fileController.downloadFolder(folder);
+                                  fileController.downloadFilesInFolder(folder);
                                 },
                               ),
                             );
